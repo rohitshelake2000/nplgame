@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NPL - Nangnur Premier League</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a1628;--card:#121e36;--card2:#1a2a4a;--green:#00c853;--gold:#ffd700;--red:#ff1744;--orange:#ff6d00;--purple:#aa00ff;--white:#eef2f6;--muted:#7a8ea8;--line:rgba(255,255,255,.08)}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--white);min-height:100vh}
+img{max-width:100%;display:block}
+a{color:var(--gold);text-decoration:none}
+
+/* HEADER */
+.header{position:sticky;top:0;z-index:99;background:linear-gradient(135deg,#0d1b2a,#1b2d4f);border-bottom:2px solid var(--gold);padding:0 16px}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:12px;height:60px;flex-wrap:nowrap;overflow:hidden}
+.site-logo{width:44px;height:44px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden;border:2px solid var(--gold);flex-shrink:0;cursor:pointer}
+.site-logo img{width:100%;height:100%;object-fit:cover}
+.site-title{cursor:pointer;flex-shrink:0}
+.site-title b{color:var(--gold);font-size:18px;display:block;line-height:1.1}
+.site-title small{color:var(--muted);font-size:10px;letter-spacing:1px;text-transform:uppercase}
+.nav{display:flex;gap:2px;overflow-x:auto;flex:1;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav button{background:none;border:none;color:#ccc;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;border-radius:6px;white-space:nowrap;transition:.2s}
+.nav button:hover{background:rgba(255,255,255,.1)}
+.nav button.on{background:var(--gold);color:#000}
+.hdr-btns{display:flex;gap:6px;flex-shrink:0}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:4px;padding:7px 14px;border:none;border-radius:6px;font-size:12px;font-weight:800;cursor:pointer;transition:.15s}
+.btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-gold{background:var(--gold);color:#000}
+.btn-green{background:var(--green);color:#000}
+.btn-red{background:var(--red);color:#fff}
+.btn-ghost{background:transparent;color:var(--gold);border:1px solid var(--gold)}
+.btn-sm{padding:4px 8px;font-size:11px}
+.btn:disabled{opacity:.3;pointer-events:none}
+
+/* LAYOUT */
+.wrap{max-width:1200px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+.card-title{color:var(--gold);font-size:18px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.muted{color:var(--muted);font-size:12px}
+.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:800;text-transform:uppercase}
+.bg{background:var(--green);color:#000}
+.br{background:var(--red);color:#fff}
+.bo{background:var(--orange);color:#000}
+.bp{background:var(--purple);color:#fff}
+.by{background:var(--gold);color:#000}
+.bgr{background:#555;color:#ddd}
+.tabs{display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap}
+.tabs button{background:var(--card2);border:1px solid var(--line);color:#ccc;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer}
+.tabs button.on{background:var(--gold);color:#000;border-color:var(--gold)}
+
+/* HERO */
+.hero{position:relative;border-radius:14px;overflow:hidden;padding:48px 20px;text-align:center;background:linear-gradient(135deg,#0d3b66,#1a5e2a,#0d3b66);border:2px solid var(--gold);margin-bottom:16px;background-size:cover;background-position:center}
+.hero-overlay{position:absolute;inset:0;background:rgba(10,22,40,.6);pointer-events:none}
+.hero *{position:relative;z-index:1}
+.hero-logo{width:90px;height:90px;border-radius:50%;margin:0 auto 10px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:44px;overflow:hidden;border:3px solid var(--gold);box-shadow:0 0 20px rgba(255,215,0,.4)}
+.hero-logo img{width:100%;height:100%;object-fit:cover}
+.hero h1{font-size:36px;font-weight:900;text-transform:uppercase;text-shadow:0 3px 0 rgba(0,0,0,.5)}
+.hero h1 span{color:var(--gold)}
+.hero p{color:#cde;font-size:16px;margin-top:6px;font-weight:600}
+.hero .stag{display:inline-block;margin-top:10px;background:rgba(0,0,0,.5);color:var(--gold);padding:4px 16px;border-radius:20px;font-weight:800;font-size:13px;letter-spacing:1px}
+@media(max-width:600px){.hero h1{font-size:24px}.hero{padding:30px 14px}}
+
+/* STAT CHIPS */
+.chip{background:var(--card2);border-radius:10px;padding:12px;text-align:center;border-bottom:2px solid var(--gold)}
+.chip b{font-size:24px;color:var(--gold);display:block}
+.chip span{font-size:11px;color:var(--muted);text-transform:uppercase}
+
+/* TEAM */
+.tlogo{width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:900;color:#fff;border:2px solid rgba(255,255,255,.3);flex-shrink:0;overflow:hidden;font-size:16px}
+.tlogo img{width:100%;height:100%;object-fit:cover}
+.team-card{border-radius:14px;padding:18px;color:#fff;position:relative;overflow:hidden;cursor:pointer;transition:.2s;border:2px solid rgba(255,255,255,.1);min-height:150px}
+.team-card:hover{transform:translateY(-3px);border-color:var(--gold)}
+.team-card .tlogo{width:56px;height:56px;font-size:26px;background:rgba(0,0,0,.3)}
+.team-card h3{font-size:18px;margin:8px 0 2px}
+.team-card p{font-size:11px;opacity:.85}
+.team-card .tp{position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,.5);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+
+/* MATCH */
+.match{background:var(--card2);border-radius:10px;padding:12px;border-left:3px solid var(--gold)}
+.match.live{border-left-color:var(--red);animation:livepulse 1.5s infinite}
+@keyframes livepulse{0%,100%{box-shadow:inset 0 0 0 0 rgba(255,23,68,.3)}50%{box-shadow:inset 0 0 10px 0 rgba(255,23,68,.3)}}
+.match .meta{font-size:11px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:4px}
+.vs{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.vs .t{display:flex;align-items:center;gap:6px;font-weight:800;font-size:14px}
+.vs .t:last-child{justify-content:flex-end;text-align:right}
+.vs .sc{font-size:12px;color:var(--gold);font-weight:700;display:block}
+.vs .vv{background:var(--gold);color:#000;font-weight:900;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px}
+.result{margin-top:8px;font-size:12px;color:#afc;border-top:1px dashed var(--line);padding-top:6px}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{background:#0d1b2a;padding:8px;text-align:left;font-size:11px;text-transform:uppercase;color:var(--muted)}
+.tbl td{padding:8px;border-bottom:1px solid var(--line)}
+.tbl tr:hover td{background:rgba(255,255,255,.02)}
+.tbl .num{text-align:center}
+.tblwrap{overflow-x:auto}
+.fdot{display:inline-block;width:16px;height:16px;border-radius:50%;font-size:9px;font-weight:900;color:#fff;text-align:center;line-height:16px;margin:0 1px}
+.W{background:var(--green)}.L{background:var(--red)}.N{background:#777}
+
+/* CAP */
+.cap{border-radius:12px;padding:16px;position:relative;overflow:hidden}
+.cap-o{background:linear-gradient(135deg,#ff6d00,#c43e00)}
+.cap-p{background:linear-gradient(135deg,#aa00ff,#6200b3)}
+.cap-g{background:linear-gradient(135deg,#ffd700,#b8860b);color:#000}
+.cap h3{font-size:13px;text-transform:uppercase;letter-spacing:1px;opacity:.9}
+.cap .big{font-size:24px;font-weight:900;margin:4px 0}
+.cap .cnum{font-size:40px;font-weight:900;position:absolute;right:14px;top:12px;opacity:.85}
+.cap small{opacity:.85;font-size:11px}
+.rank{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);font-size:13px;align-items:center}
+.rank:last-child{border:0}
+
+/* PLAYER / PANEL */
+.pcard{background:var(--card2);border-radius:10px;padding:12px;text-align:center;border-top:2px solid var(--gold)}
+.avatar{width:60px;height:60px;border-radius:50%;margin:0 auto 6px;background:linear-gradient(135deg,#1a5e2a,#0d3b66);display:flex;align-items:center;justify-content:center;font-size:26px;overflow:hidden;border:2px solid var(--gold)}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.pcard h4{font-size:14px}.pcard p{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* AUCTION BLOCK */
+.ablock{background:radial-gradient(circle at top,#1a5e2a,var(--bg) 70%);border:2px solid var(--gold);border-radius:14px;padding:24px;text-align:center}
+.ablock .aprice{font-size:44px;font-weight:900;color:var(--gold);text-shadow:0 0 20px rgba(255,215,0,.5)}
+.ablock .apname{font-size:26px;font-weight:900;text-transform:uppercase}
+.ablock .hammer{font-size:50px}
+.bidteam{display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.4);padding:5px 14px;border-radius:20px;margin-top:6px;font-weight:800;font-size:14px}
+.teambtn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px;border-radius:10px;cursor:pointer;border:2px solid rgba(255,255,255,.15);color:#fff;font-weight:800;font-size:11px;transition:.15s}
+.teambtn:hover{border-color:var(--gold);transform:scale(1.03)}
+.teambtn small{opacity:.7;font-weight:600}
+
+/* FORMS */
+input,select,textarea{width:100%;padding:8px 10px;border-radius:6px;border:1px solid rgba(255,255,255,.12);background:#0d1b2a;color:#fff;font-size:13px;font-family:inherit}
+input:focus,select:focus{outline:2px solid var(--gold);border-color:transparent}
+input[type=color]{height:38px;padding:2px;cursor:pointer}
+label{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;display:block;margin-bottom:3px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fg .full{grid-column:1/-1}
+.chk{display:flex;align-items:center;gap:6px}.chk input{width:auto}
+@media(max-width:600px){.fg{grid-template-columns:1fr}}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:200;padding:14px;backdrop-filter:blur(3px)}
+.modal-bg.open{display:flex}
+.modal{background:var(--card);border:2px solid var(--gold);border-radius:14px;width:100%;max-width:680px;max-height:90vh;overflow:auto;box-shadow:0 20px 60px #000}
+.modal-hd{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#0d1b2a;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:2}
+.modal-hd h3{color:#fff;font-size:16px}
+.modal-hd button{background:none;border:none;color:#fff;font-size:18px;cursor:pointer}
+.modal-bd{padding:16px}
+.modal-ft{padding:10px 16px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:6px;position:sticky;bottom:0;background:var(--card);flex-wrap:wrap}
+
+/* TOAST */
+.toast-el{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--gold);color:#000;padding:10px 20px;border-radius:20px;font-weight:800;font-size:13px;z-index:300;transition:.3s;box-shadow:0 8px 20px rgba(0,0,0,.5)}
+.toast-el.show{transform:translateX(-50%) translateY(0)}
+.admin-bar{background:var(--red);color:#fff;text-align:center;font-size:11px;font-weight:700;padding:4px;letter-spacing:.5px}
+footer{text-align:center;padding:24px;color:var(--muted);font-size:11px;border-top:1px solid var(--line);margin-top:30px}
+.empty{text-align:center;padding:24px;color:var(--muted);font-size:13px}
+.preview{max-width:100px;max-height:80px;border-radius:8px;border:1px solid var(--gold);margin-top:4px}
+</style>
+</head>
+<body>
+
+<div class="header">
+<div class="header-inner">
+  <div class="site-logo" id="siteLogo" onclick="go('home')">🏏</div>
+  <div class="site-title" onclick="go('home')"><b id="siteShort">NPL</b><small id="siteName">Nangnur Premier League</small></div>
+  <div class="nav" id="navBar"></div>
+  <div class="hdr-btns" id="hdrBtns"></div>
+</div>
+</div>
+<div id="adminBar"></div>
+<div class="wrap" id="app"></div>
+<footer id="footer"></footer>
+<div class="modal-bg" id="modalBg"><div class="modal" id="modalBox"></div></div>
+<div class="toast-el" id="toastEl"></div>
+
+<script>
+// ============ UTILITIES ============
+var KEY='npl_v3';
+function uid(){return Math.random().toString(36).slice(2,8)}
+function E(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function money(n){return '₹'+Number(n||0).toLocaleString('en-IN')}
+function isUrl(s){return /^(https?:|data:)/.test(String(s||''))}
+function oversDec(o){var p=String(o||'0').split('.');return(+p[0]||0)+((+p[1]||0)/6)}
+
+// ============ DEFAULT DATA ============
+function makeDefault(){
+  var t1=uid(),t2=uid(),t3=uid(),t4=uid();
+  function mp(n,v,r,tid,st,sp,stats){return{id:uid(),name:n,village:v||'Nangnur',role:r,batting:'Right Hand',bowling:'Right Arm Medium',phone:'',basePrice:1000,teamId:tid,status:st,soldPrice:sp||0,photo:'',jersey:'',stats:Object.assign({mat:0,inns:0,runs:0,balls:0,fours:0,sixes:0,hs:0,no:0,overs:0,rc:0,wkts:0,bb:''},stats||{})}}
+  var d={
+    settings:{name:'Nangnur Premier League',short:'NPL',season:'2025',tagline:'Gaon Ka Garv · Cricket Ka Jashn',adminPassword:'npl@admin',registrationOpen:true,maxOvers:10,purse:50000,squadSize:12,playoffSpots:4,venue:'Nangnur Cricket Ground',manOfSeries:'',increment:500,logo:'',banner:''},
+    teams:[
+      {id:t1,name:'Nangnur Titans',short:'NT',color:'#0b3d91',color2:'#1e90ff',owner:'Ramesh Goud',captain:'Srikanth',purse:41500,logo:'⚡'},
+      {id:t2,name:'Nangnur Warriors',short:'NW',color:'#8b0000',color2:'#ff4500',owner:'Venkatesh Reddy',captain:'Rajesh',purse:42000,logo:'🛡️'},
+      {id:t3,name:'Nangnur Strikers',short:'NS',color:'#0b6b3a',color2:'#2ecc71',owner:'Mahesh Yadav',captain:'Kiran',purse:43500,logo:'🦁'},
+      {id:t4,name:'Nangnur Kings',short:'NK',color:'#6a0dad',color2:'#ffd700',owner:'Suresh Naik',captain:'Naveen',purse:44000,logo:'👑'}
+    ],
+    players:[
+      mp('Srikanth','Nangnur','Batsman',t1,'sold',5000,{mat:3,inns:3,runs:142,balls:96,fours:14,sixes:7,hs:68,no:1}),
+      mp('Rajesh','Nangnur','All-Rounder',t2,'sold',4500,{mat:3,inns:3,runs:98,balls:70,fours:9,sixes:4,hs:45,overs:9,rc:71,wkts:6,bb:'3/18'}),
+      mp('Kiran','Kotha Nangnur','Bowler',t3,'sold',3500,{mat:3,inns:1,runs:12,balls:9,fours:1,hs:12,overs:9,rc:52,wkts:8,bb:'4/12'}),
+      mp('Naveen','Nangnur','Batsman',t4,'sold',4000,{mat:3,inns:3,runs:121,balls:88,fours:12,sixes:5,hs:57}),
+      mp('Anil','Nangnur','Wicket-Keeper',t1,'sold',2000,{mat:3,inns:3,runs:64,balls:50,fours:6,sixes:2,hs:31}),
+      mp('Praveen','Nangnur','Bowler',t2,'sold',2500,{mat:3,inns:1,runs:5,balls:4,hs:5,overs:9,rc:60,wkts:5,bb:'2/14'}),
+      mp('Mahender','Nangnur','All-Rounder',t3,'sold',3000,{mat:3,inns:3,runs:77,balls:55,fours:7,sixes:3,hs:40,overs:8,rc:58,wkts:4,bb:'2/20'}),
+      mp('Ravi','Nangnur','Batsman',t4,'sold',2000,{mat:3,inns:3,runs:55,balls:48,fours:5,sixes:1,hs:29}),
+      mp('Sandeep','Nangnur','Bowler','','registered',0),
+      mp('Vamshi','Nangnur','All-Rounder','','registered',0),
+      mp('Ganesh','Nangnur','Batsman','','registered',0),
+      mp('Lokesh','Nangnur','Wicket-Keeper','','registered',0)
+    ],
+    matches:[],
+    auction:{currentPlayerId:'',currentBid:0,currentTeamId:'',log:[],hist:[]},
+    panels:{
+      nca:[{name:'Sri. Ramesh Goud',role:'President',phone:'',photo:''},{name:'Sri. Venkatesh Reddy',role:'Vice President',phone:'',photo:''},{name:'Sri. Mahesh Yadav',role:'General Secretary',phone:'',photo:''},{name:'Sri. Suresh Naik',role:'Treasurer',phone:'',photo:''},{name:'Sri. Srinivas Rao',role:'Joint Secretary',phone:'',photo:''}],
+      npl:[{name:'Sri. Krishna Mohan',role:'NPL Chairman',phone:'',photo:''},{name:'Sri. Anjaneyulu',role:'Tournament Convener',phone:'',photo:''},{name:'Sri. Bhaskar',role:'Auction Head',phone:'',photo:''},{name:'Sri. Chandra Shekar',role:'Match Referee',phone:'',photo:''},{name:'Sri. Devender',role:'Head Scorer',phone:'',photo:''},{name:'Sri. Eshwar',role:'Media & Live Updates',phone:'',photo:''},{name:'Sri. Gopal',role:'Ground & Logistics',phone:'',photo:''},{name:'Sri. Harish',role:'Finance & Sponsorship',phone:'',photo:''}]
+    }
+  };
+  // seed matches
+  var bd=new Date();bd.setDate(bd.getDate()-3);
+  function dt(i){var x=new Date(bd);x.setDate(x.getDate()+i);return x.toISOString().slice(0,10)}
+  function pid(n){var f=d.players.find(function(x){return x.name===n});return f?f.id:''}
+  d.matches=[
+    {id:uid(),no:1,stage:'League',date:dt(0),time:'09:00',venue:d.settings.venue,teamA:t1,teamB:t2,status:'completed',scoreA:112,wktsA:6,oversA:'10',allOutA:false,scoreB:98,wktsB:9,oversB:'10',allOutB:false,winner:t1,result:'Titans won by 14 runs',motm:pid('Srikanth')},
+    {id:uid(),no:2,stage:'League',date:dt(0),time:'14:00',venue:d.settings.venue,teamA:t3,teamB:t4,status:'completed',scoreA:87,wktsA:10,oversA:'9.2',allOutA:true,scoreB:88,wktsB:4,oversB:'8.1',allOutB:false,winner:t4,result:'Kings won by 6 wickets',motm:pid('Naveen')},
+    {id:uid(),no:3,stage:'League',date:dt(1),time:'09:00',venue:d.settings.venue,teamA:t1,teamB:t3,status:'completed',scoreA:95,wktsA:8,oversA:'10',allOutA:false,scoreB:96,wktsB:5,oversB:'9.4',allOutB:false,winner:t3,result:'Strikers won by 5 wickets',motm:pid('Kiran')},
+    {id:uid(),no:4,stage:'League',date:dt(1),time:'14:00',venue:d.settings.venue,teamA:t2,teamB:t4,status:'completed',scoreA:104,wktsA:7,oversA:'10',allOutA:false,scoreB:101,wktsB:8,oversB:'10',allOutB:false,winner:t2,result:'Warriors won by 3 runs',motm:pid('Rajesh')},
+    {id:uid(),no:5,stage:'League',date:dt(2),time:'09:00',venue:d.settings.venue,teamA:t1,teamB:t4,status:'completed',scoreA:120,wktsA:5,oversA:'10',allOutA:false,scoreB:110,wktsB:7,oversB:'10',allOutB:false,winner:t1,result:'Titans won by 10 runs',motm:pid('Srikanth')},
+    {id:uid(),no:6,stage:'League',date:dt(2),time:'14:00',venue:d.settings.venue,teamA:t2,teamB:t3,status:'completed',scoreA:99,wktsA:8,oversA:'10',allOutA:false,scoreB:100,wktsB:6,oversB:'9.5',allOutB:false,winner:t3,result:'Strikers won by 4 wickets',motm:pid('Mahender')},
+    {id:uid(),no:7,stage:'Semi Final',date:dt(5),time:'09:00',venue:d.settings.venue,teamA:t1,teamB:t3,status:'upcoming',scoreA:'',wktsA:'',oversA:'',allOutA:false,scoreB:'',wktsB:'',oversB:'',allOutB:false,winner:'',result:'',motm:''},
+    {id:uid(),no:8,stage:'Final',date:dt(7),time:'14:00',venue:d.settings.venue,teamA:'',teamB:'',status:'upcoming',scoreA:'',wktsA:'',oversA:'',allOutA:false,scoreB:'',wktsB:'',oversB:'',allOutB:false,winner:'',result:'',motm:''}
+  ];
+  d.settings.manOfSeries=pid('Srikanth');
+  return d;
+}
+
+// ============ STATE ============
+var D,isAdmin,page,subPage;
+function loadData(){try{var s=localStorage.getItem(KEY);if(s)return JSON.parse(s)}catch(e){}return makeDefault()}
+function init(){D=loadData();isAdmin=sessionStorage.getItem('npl_admin')==='1';page='home';subPage={auction:'register',stats:'orange'};render()}
+function save(){localStorage.setItem(KEY,JSON.stringify(D));render()}
+function team(id){return D.teams.find(function(t){return t.id===id})}
+function player(id){return D.players.find(function(p){return p.id===id})}
+function tName(id){var t=team(id);return t?t.name:'TBD'}
+function tShort(id){var t=team(id);return t?t.short:'TBD'}
+function S(p){return p&&p.stats?p.stats:{mat:0,inns:0,runs:0,balls:0,fours:0,sixes:0,hs:0,no:0,overs:0,rc:0,wkts:0,bb:''}}
+function adm(h){return isAdmin?h:''}
+
+// ============ TOAST ============
+var toastTimer;
+function toast(msg){
+  var el=document.getElementById('toastEl');el.textContent=msg;el.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.classList.remove('show')},2500);
+}
+
+// ============ MODAL ============
+function closeModal(){document.getElementById('modalBg').classList.remove('open')}
+function openModal(title,body,foot){
+  var m=document.getElementById('modalBox');
+  m.innerHTML='<div class="modal-hd"><h3>'+title+'</h3><button onclick="closeModal()">✕</button></div><div class="modal-bd">'+body+'</div>'+(foot?'<div class="modal-ft">'+foot+'</div>':'');
+  document.getElementById('modalBg').classList.add('open');
+}
+
+// ============ IMAGE UPLOAD ============
+function uploadImage(inputId,maxPx){
+  var inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+  inp.onchange=function(e){
+    var f=e.target.files[0];if(!f)return;
+    var reader=new FileReader();
+    reader.onload=function(){
+      var img=new Image();
+      img.onload=function(){
+        var c=document.createElement('canvas');
+        var scale=Math.min(1,(maxPx||400)/Math.max(img.width,img.height));
+        c.width=img.width*scale;c.height=img.height*scale;
+        c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+        var dataUrl=c.toDataURL('image/jpeg',0.7);
+        var el=document.getElementById(inputId);if(el)el.value=dataUrl;
+        var prev=document.getElementById(inputId+'_preview');
+        if(prev)prev.innerHTML='<img src="'+dataUrl+'" class="preview">';
+        toast('Image loaded! Click Save to keep it.');
+      };
+      img.src=reader.result;
+    };
+    reader.readAsDataURL(f);
+  };
+  inp.click();
+}
+
+// ============ FORM BUILDER ============
+function fieldHTML(f,val){
+  var v=val!=null?val:(f.def!=null?f.def:'');
+  var id='f_'+f.k;
+  var cls=f.full?' full':'';
+  if(f.type==='select'){
+    var opts=(f.opts||[]).map(function(o){return '<option value="'+E(o.v)+'"'+(String(o.v)===String(v)?' selected':'')+'>'+E(o.l)+'</option>'}).join('');
+    return '<div class="'+cls+'"><label>'+f.label+'</label><select id="'+id+'">'+opts+'</select></div>';
+  }
+  if(f.type==='checkbox'){return '<div class="'+cls+' chk" style="align-self:end"><input type="checkbox" id="'+id+'"'+(v?' checked':'')+'><label style="margin:0">'+f.label+'</label></div>'}
+  if(f.type==='image'){
+    return '<div class="'+cls+'"><label>'+f.label+'</label><input type="text" id="'+id+'" value="'+E(v)+'" placeholder="Emoji, URL, or upload below"><div id="'+id+'_preview">'+(v&&isUrl(v)?'<img src="'+E(v)+'" class="preview">':'')+'</div><button type="button" class="btn btn-green btn-sm" style="margin-top:4px" onclick="uploadImage(\''+id+'\','+(f.max||400)+')">📷 Upload from Device</button></div>';
+  }
+  return '<div class="'+cls+'"><label>'+f.label+(f.req?' *':'')+'</label><input type="'+(f.type||'text')+'" id="'+id+'" value="'+E(v)+'" placeholder="'+E(f.ph||'')+'"'+(f.step?' step="'+f.step+'"':'')+'></div>';
+}
+function openForm(title,fields,vals,onSave,extraBtns){
+  vals=vals||{};
+  var html='<div class="fg">'+fields.map(function(f){return fieldHTML(f,vals[f.k])}).join('')+'</div>';
+  var foot=(extraBtns||'')+'<button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-gold" id="formSaveBtn">💾 Save</button>';
+  openModal(title,html,foot);
+  document.getElementById('formSaveBtn').onclick=function(){
+    var out={};for(var k in vals)out[k]=vals[k];
+    for(var i=0;i<fields.length;i++){
+      var f=fields[i];var el=document.getElementById('f_'+f.k);if(!el)continue;
+      var v;
+      if(f.type==='checkbox')v=el.checked;
+      else if(f.type==='number'){v=el.value===''?'':+el.value}
+      else v=el.value.trim();
+      if(f.req&&(v===''||v==null)){toast('Please fill: '+f.label);return}
+      out[f.k]=v;
+    }
+    if(onSave(out)!==false)closeModal();
+  };
+}
+function teamOpts(blank){return [{v:'',l:blank||'— Select —'}].concat(D.teams.map(function(t){return{v:t.id,l:t.name}}))}
+function playerOpts(blank){return [{v:'',l:blank||'— None —'}].concat(D.players.map(function(p){return{v:p.id,l:p.name+(p.teamId?' ('+tShort(p.teamId)+')':'')}}))}
+var ROLES=[{v:'Batsman',l:'Batsman'},{v:'Bowler',l:'Bowler'},{v:'All-Rounder',l:'All-Rounder'},{v:'Wicket-Keeper',l:'Wicket-Keeper'}];
+
+// ============ TEAM LOGO HELPER ============
+function TL(t,sz){
+  if(!t)return '<span class="tlogo" style="background:#333'+(sz?';width:'+sz+'px;height:'+sz+'px;font-size:'+Math.round(sz/2)+'px':'')+'">?</span>';
+  var s=sz?';width:'+sz+'px;height:'+sz+'px;font-size:'+Math.round(sz/2)+'px':'';
+  var inner=isUrl(t.logo)?'<img src="'+E(t.logo)+'">':E(t.logo||t.short);
+  return '<span class="tlogo" style="background:linear-gradient(135deg,'+t.color+','+t.color2+')'+s+'">'+inner+'</span>';
+}
+
+// ============ NAV ============
+var PAGES=[['home','🏠 Home'],['auction','🔨 Auction'],['teams','🛡️ Teams'],['schedule','📅 Schedule'],['points','📊 Points'],['stats','🏆 Stats'],['panel','👥 Panel']];
+function go(p){page=p;render();window.scrollTo({top:0,behavior:'smooth'})}
+
+// ============ RENDER ============
+function render(){
+  var s=D.settings;
+  document.title=s.name+' ('+s.short+')';
+  document.getElementById('siteShort').textContent=s.short;
+  document.getElementById('siteName').textContent=s.name;
+  var lg=s.logo||'🏏';
+  document.getElementById('siteLogo').innerHTML=isUrl(lg)?'<img src="'+E(lg)+'">':E(lg);
+  document.getElementById('navBar').innerHTML=PAGES.map(function(p){return '<button class="'+(page===p[0]?'on':'')+'" onclick="go(\''+p[0]+'\')">'+p[1]+'</button>'}).join('');
+  document.getElementById('hdrBtns').innerHTML=isAdmin?'<button class="btn btn-gold btn-sm" onclick="openSettings()">⚙️</button><button class="btn btn-red btn-sm" onclick="doLogout()">Logout</button>':'<button class="btn btn-ghost btn-sm" onclick="doLogin()">🔐 Admin</button>';
+  document.getElementById('adminBar').innerHTML=isAdmin?'<div class="admin-bar">🛠️ ADMIN MODE — You can edit everything</div>':'';
+  document.getElementById('footer').innerHTML='© '+new Date().getFullYear()+' '+E(s.name)+' · Season '+E(s.season)+' · Organised by <b style="color:var(--gold)">Nangnur Cricket Association</b>';
+  var views={home:viewHome,auction:viewAuction,teams:viewTeams,schedule:viewSchedule,points:viewPoints,stats:viewStats,panel:viewPanel};
+  document.getElementById('app').innerHTML=views[page]();
+}
+
+// ============ ADMIN AUTH ============
+function doLogin(){
+  openForm('🔐 Admin Login',[{k:'pw',label:'Password',type:'password',req:true,full:true}],{},function(v){
+    if(v.pw===D.settings.adminPassword){isAdmin=true;sessionStorage.setItem('npl_admin','1');toast('Welcome Admin!');render();return true}
+    toast('Wrong password!');return false;
+  });
+}
+function doLogout(){isAdmin=false;sessionStorage.removeItem('npl_admin');toast('Logged out');render()}
+
+// ============ SETTINGS ============
+function openSettings(){
+  openForm('⚙️ League Settings',[
+    {k:'name',label:'League Name',req:true},
+    {k:'short',label:'Short Name',req:true},
+    {k:'season',label:'Season / Year'},
+    {k:'tagline',label:'Tagline',full:true},
+    {k:'logo',label:'🏏 League Logo',type:'image',max:300},
+    {k:'banner',label:'🖼️ Home Banner Image',type:'image',max:1200,full:true},
+    {k:'venue',label:'Default Venue'},
+    {k:'maxOvers',label:'Overs per Innings',type:'number'},
+    {k:'purse',label:'Team Purse (₹)',type:'number'},
+    {k:'squadSize',label:'Max Squad Size',type:'number'},
+    {k:'playoffSpots',label:'Playoff Spots',type:'number'},
+    {k:'increment',label:'Bid Increment (₹)',type:'number'},
+    {k:'manOfSeries',label:'🏆 Man of the Series',type:'select',opts:playerOpts()},
+    {k:'adminPassword',label:'Admin Password',req:true},
+    {k:'registrationOpen',label:'Registration Open',type:'checkbox'}
+  ],D.settings,function(v){
+    D.settings=v;save();toast('Settings saved!');
+  },'<button class="btn btn-ghost btn-sm" onclick="exportData()">⬇ Backup</button><button class="btn btn-ghost btn-sm" onclick="importData()">⬆ Restore</button><button class="btn btn-red btn-sm" onclick="resetAll()">🗑 Reset All</button>');
+}
+function exportData(){
+  var a=document.createElement('a');
+  a.href='data:application/json,'+encodeURIComponent(JSON.stringify(D,null,2));
+  a.download='NPL_backup.json';a.click();toast('Backup downloaded');
+}
+function importData(){
+  var inp=document.createElement('input');inp.type='file';inp.accept='.json';
+  inp.onchange=function(e){
+    var r=new FileReader();
+    r.onload=function(){try{D=JSON.parse(r.result);save();closeModal();toast('Data restored!')}catch(err){toast('Invalid file')}};
+    r.readAsText(e.target.files[0]);
+  };inp.click();
+}
+function resetAll(){if(confirm('Reset ALL data? Cannot undo!')){D=makeDefault();save();closeModal();toast('Reset done')}}
+
+// ============ COMPUTATIONS ============
+function pointsTable(){
+  var t={};D.teams.forEach(function(x){t[x.id]={team:x,p:0,w:0,l:0,nr:0,pts:0,rf:0,of:0,ra:0,oa:0,form:[]}});
+  var mo=+D.settings.maxOvers||10;
+  D.matches.filter(function(m){return m.status==='completed'&&m.stage==='League'}).forEach(function(m){
+    var a=t[m.teamA],b=t[m.teamB];if(!a||!b)return;a.p++;b.p++;
+    if(m.winner==='tie'||m.winner==='nr'){a.nr++;b.nr++;a.pts++;b.pts++;a.form.push('N');b.form.push('N')}
+    else if(m.winner===m.teamA){a.w++;b.l++;a.pts+=2;a.form.push('W');b.form.push('L')}
+    else if(m.winner===m.teamB){b.w++;a.l++;b.pts+=2;b.form.push('W');a.form.push('L')}
+    var oA=m.allOutA?mo:oversDec(m.oversA),oB=m.allOutB?mo:oversDec(m.oversB);
+    a.rf+=+m.scoreA||0;a.of+=oA;a.ra+=+m.scoreB||0;a.oa+=oB;
+    b.rf+=+m.scoreB||0;b.of+=oB;b.ra+=+m.scoreA||0;b.oa+=oA;
+  });
+  return Object.values(t).map(function(r){r.nrr=(r.of?r.rf/r.of:0)-(r.oa?r.ra/r.oa:0);return r}).sort(function(a,b){return b.pts-a.pts||b.nrr-a.nrr||b.w-a.w});
+}
+function batAvg(p){var s=S(p);var o=(s.inns||0)-(s.no||0);return o>0?(s.runs/o).toFixed(1):(s.runs?s.runs+'*':'-')}
+function batSR(p){var s=S(p);return s.balls?(s.runs/s.balls*100).toFixed(1):'-'}
+function bowlEcon(p){var s=S(p);var o=oversDec(s.overs);return o?(s.rc/o).toFixed(2):'-'}
+function topRunScorers(){return D.players.filter(function(p){return S(p).runs>0}).sort(function(a,b){return S(b).runs-S(a).runs})}
+function topWicketTakers(){return D.players.filter(function(p){return S(p).wkts>0}).sort(function(a,b){return S(b).wkts-S(a).wkts})}
+function motmCounts(){var c={};D.matches.forEach(function(m){if(m.motm)c[m.motm]=(c[m.motm]||0)+1});return Object.entries(c).sort(function(a,b){return b[1]-a[1]})}
+
+// ============ HOME ============
+function matchCardHTML(m){
+  var ta=team(m.teamA),tb=team(m.teamB),mp=player(m.motm);
+  var statusBadge=m.status==='live'?'<span class="badge br">● LIVE</span>':m.status==='completed'?'<span class="badge bg">Completed</span>':'<span class="badge by">Upcoming</span>';
+  return '<div class="match '+m.status+'"><div class="meta"><span>M'+m.no+' · '+E(m.stage)+'</span>'+statusBadge+'</div><div class="vs"><div class="t">'+TL(ta)+'<div>'+E(tName(m.teamA))+(m.scoreA!==''&&m.scoreA!=null?'<span class="sc">'+m.scoreA+'/'+m.wktsA+' ('+m.oversA+' ov)</span>':'')+'</div></div><div class="vv">VS</div><div class="t"><div>'+E(tName(m.teamB))+(m.scoreB!==''&&m.scoreB!=null?'<span class="sc">'+m.scoreB+'/'+m.wktsB+' ('+m.oversB+' ov)</span>':'')+'</div>'+TL(tb)+'</div></div><div class="meta" style="margin:8px 0 0"><span>📅 '+E(m.date)+' · ⏰ '+E(m.time)+'</span><span>📍 '+E(m.venue)+'</span></div>'+(m.result?'<div class="result">🏆 '+E(m.result)+(mp?' · ⭐ MOTM: <b style="color:var(--gold)">'+E(mp.name)+'</b>':'')+'</div>':'')+adm('<div class="row" style="margin-top:8px"><button class="btn btn-gold btn-sm" onclick="editMatch(\''+m.id+'\')">✏️ Edit</button><button class="btn btn-red btn-sm" onclick="delMatch(\''+m.id+'\')">🗑</button></div>')+'</div>';
+}
+function viewHome(){
+  var s=D.settings;
+  var lg=s.logo||'🏏';
+  var bn=s.banner||'';
+  var heroStyle='';
+  if(bn&&isUrl(bn))heroStyle=' style="background:linear-gradient(rgba(10,22,40,.55),rgba(10,22,40,.8)),url(\''+E(bn)+'\') center/cover no-repeat"';
+  var up=D.matches.filter(function(m){return m.status!=='completed'}).sort(function(a,b){return(a.date+a.time).localeCompare(b.date+b.time)}).slice(0,2);
+  var rec=D.matches.filter(function(m){return m.status==='completed'}).sort(function(a,b){return b.no-a.no}).slice(0,2);
+  var tr=topRunScorers().slice(0,3),tw=topWicketTakers().slice(0,3),pt=pointsTable().slice(0,4);
+  var mos=player(s.manOfSeries);
+  var h='<div class="hero"'+heroStyle+'><div class="hero-overlay"></div><div class="hero-logo">'+(isUrl(lg)?'<img src="'+E(lg)+'">':E(lg))+'</div><h1>'+E(s.short)+' <span>'+E(s.season)+'</span></h1><p>'+E(s.tagline)+'</p><div class="stag">'+E(s.name)+'</div></div>';
+  h+='<div class="grid g4">';
+  h+='<div class="chip"><b>'+D.teams.length+'</b><span>Teams</span></div>';
+  h+='<div class="chip"><b>'+D.players.length+'</b><span>Players</span></div>';
+  h+='<div class="chip"><b>'+D.matches.filter(function(m){return m.status==='completed'}).length+'/'+D.matches.length+'</b><span>Matches</span></div>';
+  h+='<div class="chip"><b>'+D.players.filter(function(p){return p.status==='registered'}).length+'</b><span>Auction Pool</span></div>';
+  h+='</div>';
+  h+='<div class="grid g2">';
+  h+='<div class="card"><div class="card-title">📅 Upcoming <button class="btn btn-ghost btn-sm" onclick="go(\'schedule\')">View all</button></div>'+(up.length?up.map(matchCardHTML).join(''):'<div class="empty">No upcoming matches</div>')+'</div>';
+  h+='<div class="card"><div class="card-title">✅ Recent Results</div>'+(rec.length?rec.map(matchCardHTML).join(''):'<div class="empty">No results yet</div>')+'</div>';
+  h+='</div>';
+  h+='<div class="grid g3" style="margin-top:12px">';
+  h+='<div class="cap cap-o"><h3>🧢 Orange Cap</h3>'+(tr[0]?'<div class="big">'+E(tr[0].name)+'</div><small>'+E(tName(tr[0].teamId))+'</small><div class="cnum">'+S(tr[0]).runs+'</div>':'<div class="big">—</div>')+'</div>';
+  h+='<div class="cap cap-p"><h3>🧢 Purple Cap</h3>'+(tw[0]?'<div class="big">'+E(tw[0].name)+'</div><small>'+E(tName(tw[0].teamId))+'</small><div class="cnum">'+S(tw[0]).wkts+'</div>':'<div class="big">—</div>')+'</div>';
+  h+='<div class="cap cap-g"><h3>🏆 Man of Series</h3>'+(mos?'<div class="big">'+E(mos.name)+'</div><small>'+E(tName(mos.teamId))+' · '+S(mos).runs+' runs · '+S(mos).wkts+' wkts</small><div class="cnum">🏅</div>':'<div class="big">TBA</div>')+'</div>';
+  h+='</div>';
+  h+='<div class="card" style="margin-top:12px"><div class="card-title">📊 Points Table <button class="btn btn-ghost btn-sm" onclick="go(\'points\')">Full</button></div><div class="tblwrap"><table class="tbl"><tr><th>#</th><th>Team</th><th class="num">P</th><th class="num">W</th><th class="num">L</th><th class="num">Pts</th><th class="num">NRR</th></tr>';
+  pt.forEach(function(r,i){h+='<tr><td>'+(i+1)+'</td><td><div class="row">'+TL(r.team,26)+' '+E(r.team.name)+'</div></td><td class="num">'+r.p+'</td><td class="num">'+r.w+'</td><td class="num">'+r.l+'</td><td class="num"><b>'+r.pts+'</b></td><td class="num">'+(r.nrr>=0?'+':'')+r.nrr.toFixed(3)+'</td></tr>'});
+  h+='</table></div></div>';
+  return h;
+}
+
+// ============ AUCTION ============
+function viewAuction(){
+  var t=subPage.auction;
+  var h='<div class="card-title" style="font-size:24px">🔨 Player <span style="color:var(--gold)">Auction</span></div>';
+  h+='<div class="tabs"><button class="'+(t==='register'?'on':'')+'" onclick="subPage.auction=\'register\';render()">📝 Register</button><button class="'+(t==='room'?'on':'')+'" onclick="subPage.auction=\'room\';render()">🔨 Auction Room</button><button class="'+(t==='pool'?'on':'')+'" onclick="subPage.auction=\'pool\';render()">👥 Player Pool</button></div>';
+  if(t==='register')h+=viewRegister();
+  else if(t==='room')h+=viewAuctionRoom();
+  else h+=viewPool();
+  return h;
+}
+function viewRegister(){
+  var open=D.settings.registrationOpen;
+  var h='<div class="grid g2"><div class="card"><div class="card-title">📝 Registration '+(open?'<span class="badge bg">OPEN</span>':'<span class="badge br">CLOSED</span>')+'</div>';
+  if(open){
+    h+='<div class="fg">';
+    h+='<div><label>Full Name *</label><input id="r_name" placeholder="Your name"></div>';
+    h+='<div><label>Village</label><input id="r_village" placeholder="Nangnur" value="Nangnur"></div>';
+    h+='<div><label>Mobile *</label><input id="r_phone" placeholder="10 digit"></div>';
+    h+='<div><label>Role *</label><select id="r_role">'+ROLES.map(function(r){return '<option>'+r.v+'</option>'}).join('')+'</select></div>';
+    h+='<div><label>Batting</label><select id="r_bat"><option>Right Hand</option><option>Left Hand</option></select></div>';
+    h+='<div><label>Bowling</label><select id="r_bowl"><option>Right Arm Medium</option><option>Right Arm Fast</option><option>Right Arm Off Spin</option><option>Left Arm Spin</option><option>None</option></select></div>';
+    h+='<div><label>Base Price</label><select id="r_base"><option>500</option><option selected>1000</option><option>2000</option><option>5000</option></select></div>';
+    h+='<div><label>Jersey #</label><input id="r_jersey" placeholder="18"></div>';
+    h+='<div class="full"><button class="btn btn-green" style="width:100%;padding:12px;font-size:14px" onclick="regPlayer()">🏏 Register for Auction</button></div>';
+    h+='</div>';
+  }else{h+='<div class="empty">Registration closed. Contact NPL Panel.</div>'}
+  h+='</div><div class="card"><div class="card-title">📜 Rules</div><ul style="line-height:2;padding-left:16px;font-size:13px;color:#bbc">';
+  h+='<li>Purse: <b style="color:var(--gold)">'+money(D.settings.purse)+'</b></li>';
+  h+='<li>Squad: <b style="color:var(--gold)">'+D.settings.squadSize+'</b> max</li>';
+  h+='<li>Bid increment: <b style="color:var(--gold)">'+money(D.settings.increment)+'</b></li>';
+  h+='<li>Overs: <b style="color:var(--gold)">'+D.settings.maxOvers+'</b> per side</li>';
+  h+='</ul><div style="margin-top:10px"><b style="color:var(--gold)">'+D.players.length+'</b> players registered</div></div></div>';
+  return h;
+}
+function regPlayer(){
+  var g=function(id){return document.getElementById(id).value.trim()};
+  var name=g('r_name'),phone=g('r_phone');
+  if(!name){toast('Enter your name');return}
+  if(!/^\d{10}$/.test(phone)){toast('Enter valid 10-digit mobile');return}
+  if(D.players.some(function(p){return p.phone===phone})){toast('Mobile already registered');return}
+  D.players.push({id:uid(),name:name,village:g('r_village'),phone:phone,role:g('r_role'),batting:g('r_bat'),bowling:g('r_bowl'),basePrice:+g('r_base'),jersey:g('r_jersey'),photo:'',teamId:'',status:'registered',soldPrice:0,stats:{mat:0,inns:0,runs:0,balls:0,fours:0,sixes:0,hs:0,no:0,overs:0,rc:0,wkts:0,bb:''}});
+  save();toast('🎉 Registered! Good luck '+name);
+}
+function viewAuctionRoom(){
+  var a=D.auction;var p=player(a.currentPlayerId);var bt=team(a.currentTeamId);
+  var pool=D.players.filter(function(x){return x.status==='registered'});
+  var h='<div class="ablock">';
+  if(p){
+    h+='<div class="avatar" style="width:90px;height:90px;font-size:40px;margin:0 auto 8px">'+(p.photo?'<img src="'+E(p.photo)+'">':'🏏')+'</div>';
+    h+='<div class="apname">'+E(p.name)+'</div>';
+    h+='<div class="muted" style="color:#adc">'+E(p.role)+' · '+E(p.village)+'</div>';
+    h+='<div style="margin-top:10px;font-size:12px;color:#9bc">'+(bt?'CURRENT BID':'BASE PRICE')+'</div>';
+    h+='<div class="aprice">'+money(bt?a.currentBid:p.basePrice)+'</div>';
+    if(bt)h+='<div class="bidteam">'+TL(bt,24)+' '+E(bt.name)+'</div>';
+    else h+='<div class="bidteam">Waiting for bids…</div>';
+  }else{
+    h+='<div class="hammer">🔨</div><div class="apname">Auction Room</div>';
+    h+='<div class="muted" style="color:#9bc">'+(pool.length?pool.length+' players in pool':'Pool empty')+'</div>';
+  }
+  h+=adm('<div class="row" style="justify-content:center;margin-top:14px">'+(p?'<button class="btn btn-green" onclick="soldPlayer()"'+(bt?'':' disabled')+'>✅ SOLD</button><button class="btn btn-red" onclick="unsoldPlayer()">❌ UNSOLD</button><button class="btn btn-ghost" onclick="undoBid()"'+(bt?'':' disabled')+'>↩ Undo</button><button class="btn btn-ghost" onclick="clearBlock()">Remove</button>':'<button class="btn btn-gold" onclick="nextRandom()"'+(pool.length?'':' disabled')+'>🎲 Random Player</button>')+'</div>');
+  h+='</div>';
+  if(isAdmin&&p){
+    h+='<div class="card" style="margin-top:12px"><div class="card-title">Place Bid (+'+money(D.settings.increment)+')</div><div class="grid g4">';
+    D.teams.forEach(function(t){
+      var cnt=D.players.filter(function(x){return x.teamId===t.id}).length;
+      var next=bt?a.currentBid+(+D.settings.increment):p.basePrice;
+      var dis=t.purse<next||cnt>=D.settings.squadSize||t.id===a.currentTeamId;
+      h+='<button class="teambtn" style="'+(dis?'opacity:.3;':'')+'background:linear-gradient(135deg,'+t.color+','+t.color2+')"'+(dis?' disabled':'')+' onclick="placeBid(\''+t.id+'\')">'+TL(t,36)+E(t.name)+'<small>'+money(t.purse)+' · '+cnt+'/'+D.settings.squadSize+'</small></button>';
+    });
+    h+='</div></div>';
+  }
+  h+='<div class="grid g2" style="margin-top:12px">';
+  h+='<div class="card"><div class="card-title">💰 Purses</div>';
+  D.teams.forEach(function(t){var cnt=D.players.filter(function(x){return x.teamId===t.id}).length;h+='<div class="rank"><div class="row">'+TL(t,24)+' '+E(t.name)+' <span class="muted">'+cnt+'/'+D.settings.squadSize+'</span></div><b style="color:var(--gold)">'+money(t.purse)+'</b></div>'});
+  h+='</div>';
+  h+='<div class="card"><div class="card-title">📋 Log '+adm('<button class="btn btn-red btn-sm" onclick="resetAuction()">Reset</button>')+'</div><div style="max-height:250px;overflow:auto">';
+  if(a.log.length)a.log.forEach(function(l){h+='<div class="rank"><span>'+E(l.player)+(l.team?' → <b>'+E(l.team)+'</b>':'')+'</span>'+(l.price?'<span class="badge bg">'+money(l.price)+'</span>':'<span class="badge br">Unsold</span>')+'</div>'});
+  else h+='<div class="empty">No log yet</div>';
+  h+='</div></div></div>';
+  if(isAdmin){
+    h+='<div class="card" style="margin-top:12px"><div class="card-title">Pool ('+pool.length+') <button class="btn btn-ghost btn-sm" onclick="reAuction()">Re-auction unsold ('+D.players.filter(function(x){return x.status==='unsold'}).length+')</button></div>';
+    if(pool.length){h+='<div class="tblwrap"><table class="tbl"><tr><th>Name</th><th>Role</th><th>Base</th><th></th></tr>';
+    pool.forEach(function(x){h+='<tr><td><b>'+E(x.name)+'</b></td><td>'+E(x.role)+'</td><td>'+money(x.basePrice)+'</td><td><button class="btn btn-gold btn-sm" onclick="putOnBlock(\''+x.id+'\')">Put on Block</button></td></tr>'});
+    h+='</table></div>'}else h+='<div class="empty">Pool empty</div>';
+    h+='</div>';
+  }
+  return h;
+}
+function putOnBlock(id){D.auction.currentPlayerId=id;D.auction.currentBid=0;D.auction.currentTeamId='';D.auction.hist=[];save();window.scrollTo({top:0,behavior:'smooth'})}
+function nextRandom(){var pool=D.players.filter(function(x){return x.status==='registered'});if(!pool.length)return;putOnBlock(pool[Math.floor(Math.random()*pool.length)].id)}
+function clearBlock(){D.auction.currentPlayerId='';D.auction.currentTeamId='';D.auction.currentBid=0;save()}
+function placeBid(tid){var a=D.auction;var p=player(a.currentPlayerId);var t=team(tid);if(!p||!t)return;var next=a.currentTeamId?a.currentBid+(+D.settings.increment):p.basePrice;if(t.purse<next){toast('Insufficient purse');return}a.hist=a.hist||[];a.hist.push({bid:a.currentBid,team:a.currentTeamId});a.currentBid=next;a.currentTeamId=tid;save()}
+function undoBid(){var a=D.auction;var h=(a.hist||[]).pop();if(h){a.currentBid=h.bid;a.currentTeamId=h.team}else{a.currentBid=0;a.currentTeamId=''}save()}
+function soldPlayer(){var a=D.auction;var p=player(a.currentPlayerId);var t=team(a.currentTeamId);if(!p||!t)return;p.status='sold';p.teamId=t.id;p.soldPrice=a.currentBid;t.purse-=a.currentBid;a.log.unshift({player:p.name,team:t.name,price:a.currentBid});clearBlock();toast('🔨 SOLD! '+p.name+' → '+t.name+' for '+money(p.soldPrice))}
+function unsoldPlayer(){var a=D.auction;var p=player(a.currentPlayerId);if(!p)return;p.status='unsold';a.log.unshift({player:p.name,team:'',price:0});clearBlock();toast(p.name+' unsold')}
+function reAuction(){D.players.forEach(function(x){if(x.status==='unsold')x.status='registered'});save();toast('Unsold players back in pool')}
+function resetAuction(){if(!confirm('Reset entire auction?'))return;D.players.forEach(function(p){if(p.status==='sold'||p.status==='unsold'){p.status='registered';p.teamId='';p.soldPrice=0}});D.teams.forEach(function(t){t.purse=+D.settings.purse});D.auction={currentPlayerId:'',currentBid:0,currentTeamId:'',log:[],hist:[]};save();toast('Auction reset')}
+function viewPool(){
+  var h='<div class="card"><div class="card-title">👥 All Players ('+D.players.length+') '+adm('<button class="btn btn-gold btn-sm" onclick="editPlayer()">＋ Add</button>')+'</div>';
+  h+='<div class="tblwrap"><table class="tbl"><tr><th>#</th><th>Player</th><th>Role</th><th>Village</th><th>Base</th><th>Status</th><th>Team</th><th>Price</th>'+adm('<th>Actions</th>')+'</tr>';
+  D.players.forEach(function(p,i){
+    var badge=p.status==='sold'?'<span class="badge bg">Sold</span>':p.status==='unsold'?'<span class="badge br">Unsold</span>':'<span class="badge by">Pool</span>';
+    h+='<tr><td>'+(i+1)+'</td><td><b>'+E(p.name)+'</b></td><td>'+E(p.role)+'</td><td>'+E(p.village)+'</td><td>'+money(p.basePrice)+'</td><td>'+badge+'</td><td>'+(p.teamId?TL(team(p.teamId),22)+' '+E(tShort(p.teamId)):'—')+'</td><td>'+(p.soldPrice?money(p.soldPrice):'—')+'</td>'+adm('<td><div class="row"><button class="btn btn-gold btn-sm" onclick="editPlayer(\''+p.id+'\')">✏️</button><button class="btn btn-green btn-sm" onclick="editStats(\''+p.id+'\')">📈</button><button class="btn btn-red btn-sm" onclick="delPlayer(\''+p.id+'\')">🗑</button></div></td>')+'</tr>';
+  });
+  h+='</table></div></div>';
+  return h;
+}
+function editPlayer(id){
+  var p=id?player(id):{status:'registered',basePrice:1000,teamId:'',batting:'Right Hand',bowling:'Right Arm Medium',role:'Batsman',soldPrice:0,photo:'',jersey:'',village:'Nangnur',phone:'',name:'',stats:{mat:0,inns:0,runs:0,balls:0,fours:0,sixes:0,hs:0,no:0,overs:0,rc:0,wkts:0,bb:''}};
+  openForm(id?'✏️ Edit Player':'＋ Add Player',[
+    {k:'name',label:'Name',req:true},{k:'village',label:'Village'},{k:'phone',label:'Mobile'},{k:'jersey',label:'Jersey'},
+    {k:'role',label:'Role',type:'select',opts:ROLES},{k:'basePrice',label:'Base Price',type:'number'},
+    {k:'batting',label:'Batting'},{k:'bowling',label:'Bowling'},
+    {k:'status',label:'Status',type:'select',opts:[{v:'registered',l:'Pool'},{v:'sold',l:'Sold'},{v:'unsold',l:'Unsold'}]},
+    {k:'teamId',label:'Team',type:'select',opts:teamOpts('— None —')},
+    {k:'soldPrice',label:'Sold Price',type:'number'},{k:'photo',label:'Photo',type:'image',max:300}
+  ],p,function(v){if(id)Object.assign(p,v);else{v.id=uid();if(!v.stats)v.stats={mat:0,inns:0,runs:0,balls:0,fours:0,sixes:0,hs:0,no:0,overs:0,rc:0,wkts:0,bb:''};D.players.push(v)}save();toast('Player saved')});
+}
+function editStats(id){
+  var p=player(id);if(!p)return;if(!p.stats)p.stats={};
+  openForm('📈 Stats: '+E(p.name),[
+    {k:'mat',label:'Matches',type:'number'},{k:'inns',label:'Innings',type:'number'},{k:'runs',label:'Runs',type:'number'},{k:'balls',label:'Balls',type:'number'},
+    {k:'fours',label:'4s',type:'number'},{k:'sixes',label:'6s',type:'number'},{k:'hs',label:'Highest Score',type:'number'},{k:'no',label:'Not Outs',type:'number'},
+    {k:'overs',label:'Overs Bowled'},{k:'rc',label:'Runs Conceded',type:'number'},{k:'wkts',label:'Wickets',type:'number'},{k:'bb',label:'Best Bowling'}
+  ],p.stats,function(v){for(var k in v){if(v[k]===''&&k!=='overs'&&k!=='bb')v[k]=0}p.stats=v;save();toast('Stats updated')});
+}
+function delPlayer(id){if(!confirm('Delete player?'))return;D.players=D.players.filter(function(p){return p.id!==id});save()}
+
+// ============ TEAMS ============
+function viewTeams(){
+  var h='<div class="card-title" style="font-size:24px">🛡️ <span style="color:var(--gold)">Franchises</span> '+adm('<button class="btn btn-gold btn-sm" onclick="editTeam()">＋ Add Team</button>')+'</div>';
+  h+='<div class="grid g3">';
+  D.teams.forEach(function(t){
+    var sq=D.players.filter(function(p){return p.teamId===t.id}).length;
+    h+='<div class="team-card" style="background:linear-gradient(135deg,'+t.color+','+t.color2+')" onclick="viewTeam(\''+t.id+'\')">'+TL(t,56)+'<h3>'+E(t.name)+'</h3><p>👤 '+E(t.owner||'—')+' · ©️ '+E(t.captain||'—')+'</p><p>Squad: <b>'+sq+'</b></p><div class="tp">💰 '+money(t.purse)+'</div>'+adm('<div class="row" style="margin-top:8px;position:relative;z-index:2"><button class="btn btn-gold btn-sm" onclick="event.stopPropagation();editTeam(\''+t.id+'\')">✏️</button><button class="btn btn-red btn-sm" onclick="event.stopPropagation();delTeam(\''+t.id+'\')">🗑</button></div>')+'</div>';
+  });
+  h+='</div>';
+  return h;
+}
+function viewTeam(id){
+  var t=team(id);var sq=D.players.filter(function(p){return p.teamId===id});
+  var body='<div style="background:linear-gradient(135deg,'+t.color+','+t.color2+');border-radius:10px;padding:14px;margin-bottom:12px" class="row">'+TL(t,50)+'<div><h3 style="font-size:20px">'+E(t.name)+'</h3><div style="font-size:12px">Owner: '+E(t.owner)+' · Captain: '+E(t.captain)+'</div><div style="font-size:12px">Purse: <b>'+money(t.purse)+'</b></div></div></div>';
+  if(sq.length){
+    body+='<div class="grid g3">';
+    sq.forEach(function(p){body+='<div class="pcard"><div class="avatar">'+(p.photo?'<img src="'+E(p.photo)+'">':'🏏')+'</div><h4>'+E(p.name)+(p.name===t.captain?' ©':'')+'</h4><p>'+E(p.role)+'</p><p>'+S(p).runs+' runs · '+S(p).wkts+' wkts</p><span class="badge by">'+money(p.soldPrice)+'</span></div>'});
+    body+='</div>';
+  }else body+='<div class="empty">No players yet</div>';
+  openModal(E(t.name)+' — Squad',body);
+}
+function editTeam(id){
+  var t=id?team(id):{color:'#0b6b3a',color2:'#1aa35a',purse:D.settings.purse,logo:'🏏',name:'',short:'',owner:'',captain:''};
+  openForm(id?'✏️ Edit Team':'＋ Add Team',[
+    {k:'name',label:'Team Name',req:true},{k:'short',label:'Short Code',req:true},
+    {k:'owner',label:'Owner'},{k:'captain',label:'Captain'},
+    {k:'color',label:'Primary Color',type:'color'},{k:'color2',label:'Secondary Color',type:'color'},
+    {k:'purse',label:'Purse (₹)',type:'number'},
+    {k:'logo',label:'Logo',type:'image',max:200}
+  ],t,function(v){v.short=v.short.toUpperCase();if(id)Object.assign(t,v);else{v.id=uid();D.teams.push(v)}save();toast('Team saved')});
+}
+function delTeam(id){if(!confirm('Delete team?'))return;D.teams=D.teams.filter(function(t){return t.id!==id});D.players.forEach(function(p){if(p.teamId===id){p.teamId='';p.status='registered';p.soldPrice=0}});save()}
+
+// ============ SCHEDULE ============
+function viewSchedule(){
+  var ms=D.matches.slice().sort(function(a,b){return(a.date+a.time).localeCompare(b.date+b.time)});
+  var live=ms.filter(function(m){return m.status==='live'});
+  var up=ms.filter(function(m){return m.status==='upcoming'});
+  var done=ms.filter(function(m){return m.status==='completed'}).reverse();
+  var h='<div class="card-title" style="font-size:24px">📅 <span style="color:var(--gold)">Schedule</span> '+adm('<button class="btn btn-gold btn-sm" onclick="editMatch()">＋ Add</button><button class="btn btn-ghost btn-sm" onclick="autoGen()">⚡ Auto-Generate</button>')+'</div>';
+  function sec(t,l){if(!l.length)return '';var s='<div class="card"><div class="card-title">'+t+' ('+l.length+')</div><div class="grid g2">';l.forEach(function(m){s+=matchCardHTML(m)});return s+'</div></div>'}
+  h+=sec('🔴 Live',live)+sec('📅 Upcoming',up)+sec('✅ Results',done);
+  if(!D.matches.length)h+='<div class="card empty">No matches yet</div>';
+  return h;
+}
+function editMatch(id){
+  var m=id?D.matches.find(function(x){return x.id===id}):{no:D.matches.length+1,stage:'League',date:new Date().toISOString().slice(0,10),time:'09:00',venue:D.settings.venue,status:'upcoming',teamA:'',teamB:'',scoreA:'',wktsA:'',oversA:'',allOutA:false,scoreB:'',wktsB:'',oversB:'',allOutB:false,winner:'',result:'',motm:''};
+  openForm(id?'✏️ Edit Match':'＋ Add Match',[
+    {k:'no',label:'Match #',type:'number',req:true},{k:'stage',label:'Stage',type:'select',opts:['League','Semi Final','Qualifier','Eliminator','Final'].map(function(x){return{v:x,l:x}})},
+    {k:'date',label:'Date',type:'date',req:true},{k:'time',label:'Time',type:'time'},
+    {k:'venue',label:'Venue',full:true},
+    {k:'teamA',label:'Team A',type:'select',opts:teamOpts()},{k:'teamB',label:'Team B',type:'select',opts:teamOpts()},
+    {k:'status',label:'Status',type:'select',opts:[{v:'upcoming',l:'Upcoming'},{v:'live',l:'Live'},{v:'completed',l:'Completed'}]},
+    {k:'winner',label:'Winner',type:'select',opts:teamOpts('— TBD —').concat([{v:'tie',l:'Tie'},{v:'nr',l:'No Result'}])},
+    {k:'scoreA',label:'Team A Runs',type:'number'},{k:'wktsA',label:'Team A Wkts',type:'number'},
+    {k:'oversA',label:'Team A Overs'},{k:'allOutA',label:'Team A All Out',type:'checkbox'},
+    {k:'scoreB',label:'Team B Runs',type:'number'},{k:'wktsB',label:'Team B Wkts',type:'number'},
+    {k:'oversB',label:'Team B Overs'},{k:'allOutB',label:'Team B All Out',type:'checkbox'},
+    {k:'result',label:'Result Text',full:true},{k:'motm',label:'⭐ Man of Match',type:'select',opts:playerOpts(),full:true}
+  ],m,function(v){if(id)Object.assign(m,v);else{v.id=uid();D.matches.push(v)}save();toast('Match saved')});
+}
+function delMatch(id){if(!confirm('Delete match?'))return;D.matches=D.matches.filter(function(m){return m.id!==id});save()}
+function autoGen(){
+  if(D.teams.length<2){toast('Need 2+ teams');return}
+  openForm('⚡ Auto-Generate',[
+    {k:'start',label:'Start Date',type:'date',req:true,def:new Date().toISOString().slice(0,10)},
+    {k:'perDay',label:'Matches/Day',type:'number',def:2},
+    {k:'clear',label:'Remove old league matches',type:'checkbox',def:true}
+  ],{},function(v){
+    if(v.clear)D.matches=D.matches.filter(function(m){return m.stage!=='League'});
+    var pairs=[];for(var i=0;i<D.teams.length;i++)for(var j=i+1;j<D.teams.length;j++)pairs.push([D.teams[i].id,D.teams[j].id]);
+    pairs.sort(function(){return Math.random()-.5});
+    var no=D.matches.length+1;var d=new Date(v.start);var times=['09:00','14:00'];
+    pairs.forEach(function(p,i){
+      var slot=i%(+v.perDay||2);if(i>0&&slot===0)d.setDate(d.getDate()+1);
+      D.matches.push({id:uid(),no:no++,stage:'League',date:d.toISOString().slice(0,10),time:times[slot%2],venue:D.settings.venue,teamA:p[0],teamB:p[1],status:'upcoming',scoreA:'',wktsA:'',oversA:'',allOutA:false,scoreB:'',wktsB:'',oversB:'',allOutB:false,winner:'',result:'',motm:''});
+    });
+    save();toast(pairs.length+' matches generated');
+  });
+}
+
+// ============ POINTS TABLE ============
+function viewPoints(){
+  var pt=pointsTable();var q=+D.settings.playoffSpots;
+  var h='<div class="card-title" style="font-size:24px">📊 Points <span style="color:var(--gold)">Table</span></div>';
+  h+='<div class="card"><div class="tblwrap"><table class="tbl"><tr><th>#</th><th>Team</th><th class="num">P</th><th class="num">W</th><th class="num">L</th><th class="num">NR</th><th class="num">Pts</th><th class="num">NRR</th><th>Form</th></tr>';
+  pt.forEach(function(r,i){
+    h+='<tr'+(i<q?' style="border-left:3px solid var(--green)"':'')+'><td><b>'+(i+1)+'</b></td><td><div class="row">'+TL(r.team,28)+' <b>'+E(r.team.name)+'</b></div></td><td class="num">'+r.p+'</td><td class="num">'+r.w+'</td><td class="num">'+r.l+'</td><td class="num">'+r.nr+'</td><td class="num"><b style="color:var(--gold);font-size:16px">'+r.pts+'</b></td><td class="num" style="color:'+(r.nrr>=0?'var(--green)':'var(--red)')+'">'+(r.nrr>=0?'+':'')+r.nrr.toFixed(3)+'</td><td>'+r.form.slice(-5).map(function(f){return '<span class="fdot '+f+'">'+f+'</span>'}).join('')+'</td></tr>';
+  });
+  h+='</table></div><div class="muted" style="margin-top:8px">🟢 Top '+q+' qualify · Win=2pts · Tie/NR=1pt</div></div>';
+  return h;
+}
+
+// ============ STATS ============
+function viewStats(){
+  var t=subPage.stats;
+  var h='<div class="card-title" style="font-size:24px">🏆 Stats & <span style="color:var(--gold)">Awards</span></div>';
+  h+='<div class="tabs"><button class="'+(t==='orange'?'on':'')+'" onclick="subPage.stats=\'orange\';render()">🟠 Orange Cap</button><button class="'+(t==='purple'?'on':'')+'" onclick="subPage.stats=\'purple\';render()">🟣 Purple Cap</button><button class="'+(t==='awards'?'on':'')+'" onclick="subPage.stats=\'awards\';render()">🏆 Awards</button><button class="'+(t==='all'?'on':'')+'" onclick="subPage.stats=\'all\';render()">📋 All Stats</button></div>';
+  if(t==='orange')h+=viewOrange();
+  else if(t==='purple')h+=viewPurple();
+  else if(t==='awards')h+=viewAwards();
+  else h+=viewAllStats();
+  return h;
+}
+function viewOrange(){
+  var l=topRunScorers();var top=l[0];
+  var h='';
+  if(top)h+='<div class="cap cap-o" style="margin-bottom:12px;padding:22px"><h3>🧢 Orange Cap — Highest Run Scorer</h3><div class="big" style="font-size:30px">'+E(top.name)+'</div><small>'+E(tName(top.teamId))+' · Avg '+batAvg(top)+' · SR '+batSR(top)+' · HS '+S(top).hs+'</small><div class="cnum" style="font-size:54px">'+S(top).runs+'</div></div>';
+  h+='<div class="card"><div class="tblwrap"><table class="tbl"><tr><th>#</th><th>Player</th><th>Team</th><th class="num">Mat</th><th class="num">Runs</th><th class="num">Balls</th><th class="num">HS</th><th class="num">Avg</th><th class="num">SR</th><th class="num">4s</th><th class="num">6s</th>'+adm('<th></th>')+'</tr>';
+  l.forEach(function(p,i){h+='<tr><td>'+(i+1)+'</td><td><b>'+E(p.name)+'</b></td><td>'+E(tShort(p.teamId))+'</td><td class="num">'+S(p).mat+'</td><td class="num"><b style="color:var(--orange)">'+S(p).runs+'</b></td><td class="num">'+S(p).balls+'</td><td class="num">'+S(p).hs+'</td><td class="num">'+batAvg(p)+'</td><td class="num">'+batSR(p)+'</td><td class="num">'+S(p).fours+'</td><td class="num">'+S(p).sixes+'</td>'+adm('<td><button class="btn btn-gold btn-sm" onclick="editStats(\''+p.id+'\')">✏️</button></td>')+'</tr>'});
+  h+='</table></div></div>';
+  return h;
+}
+function viewPurple(){
+  var l=topWicketTakers();var top=l[0];
+  var h='';
+  if(top)h+='<div class="cap cap-p" style="margin-bottom:12px;padding:22px"><h3>🧢 Purple Cap — Highest Wicket Taker</h3><div class="big" style="font-size:30px">'+E(top.name)+'</div><small>'+E(tName(top.teamId))+' · Econ '+bowlEcon(top)+' · Best '+E(S(top).bb||'-')+'</small><div class="cnum" style="font-size:54px">'+S(top).wkts+'</div></div>';
+  h+='<div class="card"><div class="tblwrap"><table class="tbl"><tr><th>#</th><th>Player</th><th>Team</th><th class="num">Mat</th><th class="num">Overs</th><th class="num">Runs</th><th class="num">Wkts</th><th class="num">Best</th><th class="num">Econ</th>'+adm('<th></th>')+'</tr>';
+  l.forEach(function(p,i){h+='<tr><td>'+(i+1)+'</td><td><b>'+E(p.name)+'</b></td><td>'+E(tShort(p.teamId))+'</td><td class="num">'+S(p).mat+'</td><td class="num">'+S(p).overs+'</td><td class="num">'+S(p).rc+'</td><td class="num"><b style="color:#ce93d8">'+S(p).wkts+'</b></td><td class="num">'+E(S(p).bb||'-')+'</td><td class="num">'+bowlEcon(p)+'</td>'+adm('<td><button class="btn btn-gold btn-sm" onclick="editStats(\''+p.id+'\')">✏️</button></td>')+'</tr>'});
+  h+='</table></div></div>';
+  return h;
+}
+function viewAwards(){
+  var mos=player(D.settings.manOfSeries);var mc=motmCounts();
+  var h='<div class="grid g2">';
+  h+='<div class="cap cap-g" style="padding:22px"><h3>🏆 Man of the Series</h3>';
+  if(mos){h+='<div class="big" style="font-size:28px">'+E(mos.name)+'</div><small>'+E(tName(mos.teamId))+' · '+S(mos).runs+' runs · '+S(mos).wkts+' wkts</small><div class="cnum" style="font-size:54px">🏅</div>'}
+  else h+='<div class="big">To be announced</div>';
+  h+=adm('<button class="btn btn-ghost btn-sm" style="margin-top:8px;color:#000;border-color:#000" onclick="openSettings()">Set in Settings</button>');
+  h+='</div>';
+  h+='<div class="card"><div class="card-title">⭐ Most MOTM Awards</div>';
+  if(mc.length)mc.forEach(function(x,i){var p=player(x[0]);if(p)h+='<div class="rank"><span>'+(i+1)+'. <b>'+E(p.name)+'</b> <span class="muted">'+E(tShort(p.teamId))+'</span></span><b style="color:var(--gold)">'+x[1]+' ⭐</b></div>'});
+  else h+='<div class="empty">No awards yet</div>';
+  h+='</div></div>';
+  h+='<div class="card" style="margin-top:12px"><div class="card-title">🎖️ MOTM — All Matches</div><div class="grid g4">';
+  D.matches.filter(function(m){return m.motm}).forEach(function(m){
+    var p=player(m.motm);
+    h+='<div class="pcard"><div class="avatar">'+(p&&p.photo?'<img src="'+E(p.photo)+'">':'🏏')+'</div><h4>'+E(p?p.name:'—')+'</h4><p style="color:var(--gold)">M'+m.no+' · '+E(m.stage)+'</p><p>'+E(tShort(m.teamA))+' vs '+E(tShort(m.teamB))+'</p></div>';
+  });
+  h+='</div></div>';
+  return h;
+}
+function viewAllStats(){
+  var l=D.players.slice().sort(function(a,b){return(S(b).runs+S(b).wkts*20)-(S(a).runs+S(a).wkts*20)});
+  var h='<div class="card"><div class="card-title">📋 All Players Stats</div><div class="tblwrap"><table class="tbl"><tr><th>Player</th><th>Team</th><th>Role</th><th class="num">Mat</th><th class="num">Runs</th><th class="num">HS</th><th class="num">Wkts</th><th class="num">Best</th>'+adm('<th></th>')+'</tr>';
+  l.forEach(function(p){h+='<tr><td><b>'+E(p.name)+'</b></td><td>'+E(p.teamId?tShort(p.teamId):'—')+'</td><td>'+E(p.role)+'</td><td class="num">'+(S(p).mat||0)+'</td><td class="num">'+(S(p).runs||0)+'</td><td class="num">'+(S(p).hs||0)+'</td><td class="num">'+(S(p).wkts||0)+'</td><td class="num">'+E(S(p).bb||'-')+'</td>'+adm('<td><button class="btn btn-gold btn-sm" onclick="editStats(\''+p.id+'\')">✏️</button></td>')+'</tr>'});
+  h+='</table></div></div>';
+  return h;
+}
+
+// ============ PANEL ============
+function viewPanel(){
+  function panelCard(m,grp,i){
+    return '<div class="pcard"><div class="avatar">'+(m.photo&&isUrl(m.photo)?'<img src="'+E(m.photo)+'">':'👤')+'</div><h4>'+E(m.name||'Vacant')+'</h4><p style="color:var(--gold);font-weight:700">'+E(m.role)+'</p>'+(m.phone?'<p>📞 '+E(m.phone)+'</p>':'')+adm('<button class="btn btn-gold btn-sm" style="margin-top:6px" onclick="editPanel(\''+grp+'\','+i+')">✏️</button>')+'</div>';
+  }
+  var h='<div class="card-title" style="font-size:24px">👥 Organising <span style="color:var(--gold)">Panel</span></div>';
+  h+='<div class="card"><div class="card-title">🏛️ Nangnur Cricket Association (NCA) <span class="badge by">'+D.panels.nca.length+' Members</span></div><div class="grid g4" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">';
+  D.panels.nca.forEach(function(m,i){h+=panelCard(m,'nca',i)});
+  h+='</div></div>';
+  h+='<div class="card"><div class="card-title">🏏 '+E(D.settings.short)+' Tournament Panel <span class="badge bg">'+D.panels.npl.length+' Members</span></div><div class="grid g4" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">';
+  D.panels.npl.forEach(function(m,i){h+=panelCard(m,'npl',i)});
+  h+='</div></div>';
+  return h;
+}
+function editPanel(grp,i){
+  var m=D.panels[grp][i];
+  openForm('✏️ Edit Panel Member',[
+    {k:'name',label:'Name',req:true},{k:'role',label:'Role',req:true},
+    {k:'phone',label:'Phone'},{k:'photo',label:'Photo',type:'image',max:300}
+  ],m,function(v){D.panels[grp][i]=v;save();toast('Panel updated')});
+}
+
+// ============ BOOT ============
+init();
+</script>
+</body>
+</html>
